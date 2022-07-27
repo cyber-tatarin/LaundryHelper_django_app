@@ -1,0 +1,95 @@
+{% extends 'lh/base.html' %}
+
+{% block content %}
+
+    <p></p>
+    <h1>Мои стирки</h1>
+    <hr>
+
+    <body class="container">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div  id="show">
+                    <a href="#" >Показать массу</a>
+                </div>
+                <div id="hide" class="hide">
+                    <a href="#" >Скрыть массу</a>
+                </div>
+            </li>
+        </ul>
+        <hr>
+    </body>
+
+    <ul class="list-group">
+        {% for group, mass in object_list %}
+        <li class="list-group-item">
+            <div>
+                Категория: {{ group.0.color.color }}
+                <br>
+                Рекомендованная температура: {{ group.0.temperature }}°C
+            </div>
+            {% if mass > 0 %}
+                {% if mass > 3800 %}
+                    <div class="toggle hide" > Примерная масса: ~{% widthratio mass 1000 1 %} кг </div>
+                {% else %}
+                    <div class="toggle hide" > Примерная масса: ~{{mass}} г </div>
+                {% endif %}
+            {% endif %}
+
+            <p></p>
+
+            <ul class="list-group">
+                {% for obj in group %}
+                <li class="list-group-item">
+                    {{obj.title}}
+
+                    {% if obj.photo %}
+                    <div>
+                        <img src="{{obj.photo.url}}" width="150px">
+                    </div>
+                    <p></p>
+                    {% endif %}
+
+                    <p><a href="{% url 'washes:remove-from-wash' obj.id %}">Убрать из стирки</a></p>
+                </li>
+                {% endfor %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Постирать</button>
+                    <input name="col" type="hidden" value={{group.0.color.id}}>
+                    <input name="tem" type="hidden" value={{group.0.temperature}}>
+                </form>
+            </ul>
+            <p></p>
+        </li>
+        <p></p>
+        {% endfor %}
+    </ul>
+
+    <script>
+    const targetDiv = document.getElementById("hide");
+    const btn = document.getElementById("show");
+    const massList = document.querySelectorAll(".toggle");
+
+
+    btn.onclick = function a() {
+        targetDiv.classList.toggle("hide");
+        btn.classList.toggle("hide");
+        for (const mass of massList)
+        {
+            mass.classList.toggle("hide");
+        }
+    };
+
+     targetDiv.onclick = function b() {
+        btn.classList.toggle("hide");
+        targetDiv.classList.toggle("hide");
+         for (const mass of massList)
+         {
+            mass.classList.toggle("hide");
+         }
+     };
+    </script>
+
+{% endblock %}

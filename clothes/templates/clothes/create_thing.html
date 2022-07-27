@@ -1,0 +1,65 @@
+{% extends 'lh/base.html' %}
+
+{% block content %}
+
+    <h1>Добавить вещь</h1>
+    <hr>
+
+    {% if form.errors %}
+        <p>{{ form.errors.error }}</p>
+    {% endif %}
+
+
+    <form method="post" enctype="multipart/form-data">
+
+        <div class="mb-3"  align="left">
+            <label for="thing-title" class="form-label">Название</label>
+            {{ form.title }}
+            <div id="titleHelp" class="form-text">Например: Красная кофта ZARA</div>
+        </div>
+
+        <div class="mb-3"  align="left">
+            <label for="thing-temp" class="form-label">Рекомендованная температура стирки (°C)</label>
+            {{ form.temperature }}
+            <div id="tempHelp" class="form-text">По этому параметру будут сортироваться стирки</div>
+        </div>
+
+    <div class="blank"></div>
+
+        <p align="left" > Цветовая группа вещи
+            (<a href="{% url 'clothes:create-color' %}">Добавить цветовую группу</a>
+            |
+            <a href="{% url 'clothes:colors-list' %}">Редактировать цветовые группы</a>)
+        </p>
+
+        {% for i in form.color %}
+        <div class="form-check"  align="left">
+            {{ i }}
+        </div>
+        {% endfor %}
+
+    <div class="blank"></div>
+
+        <div class="mb-3"  align="left">
+            <label for="thing-mass" class="form-label">Масса вещи (грамм)</label>
+            {{ form.mass }}
+            <div id="massHelp" class="form-text">Средняя масса одной вещи ~200 грамм</div>
+        </div>
+
+        <div class="mb-3"  align="left">
+            <label for="formFile" class="form-label">Фотография вещи</label>
+            {{ form.photo }}
+        </div>
+
+    <div class="blank"></div>
+
+        {% csrf_token %}
+
+        <button type="submit" class="btn btn-success">Добавить</button>
+
+    </form>
+
+
+    <a href="{% url 'home' %}">Forgot password?</a>
+
+{% endblock %}

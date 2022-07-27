@@ -1,0 +1,26 @@
+{% extends 'lh/base.html' %}
+
+{% block content %}
+
+    <p></p>
+    <h1>Выберите профиль</h1>
+    <hr>
+
+    <body class="container">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="{% url 'create-profile' %}">Создать профиль</a>
+            </li>
+        </ul>
+
+    <hr>
+
+        <ul class="list-group">
+        {% for profile in profiles %}
+            <li class="list-group-item">
+                <a href="{% url 'set-profile-id' profile.id %}"> {{profile.name}} </a>
+            </li>
+        {% endfor %}
+        </ul>
+
+{% endblock %}

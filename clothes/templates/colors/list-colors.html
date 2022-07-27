@@ -1,0 +1,49 @@
+{% extends 'lh/base.html' %}
+
+{% block content %}
+
+    <p></p>
+    <h1>Мои цветовые группы</h1>
+    <hr>
+
+    <body class="container">
+
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="{% url 'clothes:create-color' %}">Добавить цветовую группу</a>
+            </li>
+        </ul>
+
+        <p></p>
+
+        <ul class="list-group">
+            {% for color in colors_list %}
+            <li class="list-group-item">
+                <p>
+                    <span>{{color.color}}</span>
+                    {% if color.owner %}
+                    (<a href="#" onclick="document.getElementById({{color.id}}).style.display='block'">Удалить</a>)
+                    {% endif %}
+                </p>
+
+                <div id={{color.id}} class="modal">
+                    <span onclick="document.getElementById({{color.id}}).style.display='none'" class="close" title="Close Modal">&times;</span>
+                    <form class="modal-content" action="{% url 'clothes:delete-color' color.id %}" method="post"> {% csrf_token %}
+                        <div class="container">
+                            <h1>Удаление категории "{{color.color}}"</h1>
+                            <p>Вы уверены, что хотите удалить эту категорию? <br> Все вещи этой категории будут так же удалены.</p>
+
+                            <div class="clearfix">
+                                <button type="button" class="cancelbtn" onclick="document.getElementById({{color.id}}).style.display='none'">Нет</button>
+                                <button type="submit" class="deletebtn" onclick="document.getElementById('id01').style.display='none'">Удалить</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+    </body>
+
+{% endblock %}

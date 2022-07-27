@@ -1,0 +1,84 @@
+{% extends 'lh/base.html' %}
+
+{% block content %}
+
+    <p></p>
+    <h1>Мои вещи</h1>
+    <hr>
+
+    <body class="container">
+        <ul class="list-group">
+            <li class="list-group-item">
+            <a href="{% url 'clothes:create' %}">Добавить вещь</a>
+            </li>
+        </ul>
+
+        <p></p>
+
+        <body class="container">
+            <ul class="list-group">
+                <li class="list-group-item">
+                <form method="get" >
+                    <div class="d-grid gap-2 col-4 mx-auto">
+                        <input name="search" type="search" placeholder="Введите название вещи">
+                        <button type="submit" class="btn btn-primary">Поиск</button>
+                    </div>
+                </form>
+                </li>
+            </ul>
+            <hr>
+        </body>
+
+        <ul class="list-group">
+            {% for thing in thing_list %}
+            <li class="list-group-item">
+                <p>
+                    <span>{{thing.title}}</span>
+                    (<a href="{% url 'clothes:edit' thing.id %}">Редактировать</a>
+                    |
+                    <a href="#" onclick="document.getElementById({{thing.id}}).style.display='block'">Удалить</a>)
+
+                    <div id={{thing.id}} class="modal">
+                      <span onclick="document.getElementById({{thing.id}}).style.display='none'" class="close" title="Close Modal">&times;</span>
+                      <form class="modal-content" action="{% url 'clothes:delete' thing.id %}" method="post"> {% csrf_token %}
+
+                        <div class="container">
+                          <h1>Удаление вещи "{{thing.title}}"</h1>
+                          <p>Вы уверены, что хотите удалить эту вещь?</p>
+
+                          <div class="clearfix">
+                            <button type="button" class="cancelbtn" onclick="document.getElementById('id01').style.display='none'">Нет</button>
+                            <button type="submit" class="deletebtn" onclick="document.getElementById('id01').style.display='none'">Удалить</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+
+                    <p> Категория:
+                    {{thing.color.color}}
+                    <br>
+                    Рекомендованная температура: {{thing.temperature}}°C
+                    </p>
+
+                    {% if thing.photo %}
+                    <div>
+                        <img src="{{thing.photo.url}}" width="150px">
+                    </div>
+                    <p></p>
+                    {% endif %}
+
+                    {% if thing.condition == 1 %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Отправить в стирку</button>
+                        <input name="switch_id" type="hidden" value={{thing.id}}>
+                    </form>
+                    {% else %}
+                    <p><a href="{% url 'washes:remove-from-wash' thing.id %}">Убрать из стирки</a></p>
+                    {% endif %}
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
